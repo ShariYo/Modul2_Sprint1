@@ -1,0 +1,112 @@
+---Best Practices for Data Management---
+-Never modify the source data files (you want to preserve a record of the data as you received it).
+-Write a script (e.g. a Python program) to generate your analysis files from the source data files.
+-Advantages of this approach: If new source data arrives, the analysis files can be updated using the script. Also, complex data management can be reproduced and is documented through the code in the script.
+-Name variables with brief interpretable names.
+-Short variable names convey too little meaning, and very long names are awkward to use in complex expressions
+-Variable names consisting only of letters (a-z, case sensitive), numbers (not as the first character) and the underscore character (_) will be handled easily by most statistical software.
+-Whitespace in variable names is allowed in Python/Pandas, but confuses analysis based on formulas. To avoid this, use (for example) "birth_date" instead of "birth date".
+-Most statistical software will treat blank, “NA”, or “.” as a missing value.
+
+---Spreadsheet Software---
+-Spreadsheet software can be useful for getting a quick overview of a data set, but is quite limited for more advanced data management and analysis.
+-Font style and text color in a spreadsheet are generally not interpretable by statistical software so should not be used to encode important information.
+-Spreadsheet graphs and charts will generally be ignored when importing spreadsheet data into statistical software.
+-Each sheet in a spreadsheet workbook is usually imported as a separate dataset.
+-Python can read most Excel files directly, but may struggle with large, complex, or very old files.
+-Text/CSV is a better choice than spreadsheet formats (e.g. .xlsx) for data exchange and archiving.
+
+SELECT * - selects all the columns
+FROM - chooses from which table to select
+LIMIT 10 - limits given data to 10 rows
+ORDER BY - let's your data get ordered
+ORDER BY ... DESC - gets data ordered on descending way
+WHERE - filters set of results based on specific criteria
+AS - can name column whatever you want when selecting it
+LIKE - filters results similar to what is being searched
+IN - for more than one condition
+AND, BETWEEN - allows to combine operations where all combined conditions must be true
+OR - atleast one must be true
+DISTINCT - right after SELECT function removes duplicates
+IS NULL - to find if column has empty cells
+COUNT - counts the number of rows in the table
+SUM - sums numeric values from the column
+MIN - finds minimal value
+MAX - finds maximal value
+AVG - finds mean of values (must be numerical)
+GROUP BY - used to aggregate data within subsets of the data;
+it always goes between WHERE and ORDER BY
+DISTINCT - always used in SELECT statements. It provides the unique rows for all columns 
+written in the SELECT statement.
+HAVING - way to filter a query that has been aggregated, because WHERE does not allow to do it.
+DATE_TRUNC - allows to truncate date to particular part of date-time column (day, month, week, etc.).
+DATE_PART - pulls specific portion of a date.
+CASE - it always goes in the SELECT clause. It must include WHEN, THEN, and END. ELSE is
+an optional.
+UNION - ??? (sets)
+UNION ALL - ??? (sets)
+INTERSECT - ??? (sets)
+EXCEPT - returns the first results set minus any overlap with second result set.
+
+
+
+
+SELECT COUNT(*)
+FROM accounts;
+
+
+Book for modul2:
+https://www.cambridge.org/core/books/trustworthy-online-controlled-experiments/D97B26382EB0EB2DC2019A7A7B518F59
+
+VERY USEFULL CODE:
+
+-----
+from google.cloud import bigquery
+
+client = bigquery.Client()
+
+dataset_ref = client.dataset("some_dataset", project="bigquery-public-data")
+
+dataset = client.get_dataset(dataset_ref)
+
+tables = list(client.list_tables(dataset))
+
+-------
+table_ref = dataset_ref.table("full")
+
+table = client.get_table(table_ref)
+
+table.schema
+
+client.list_rows(table, max_results=5).to_dataframe()
+--------
+query_job = client.query(query)
+
+us_cities = query_job.to_dataframe()
+
+---------
+one_MB = 1000*1000
+safe_config = bigquery.QueryJobConfig(maximum_bytes_billed=one_MB)
+
+safe_query_job = client.query(query, job_config=safe_config)
+
+
+Histograms---------------------------------------------------
+It allows us to display data graphically;
+4 main aspects to describe data:
+	- Shape;
+	- Center;
+	- Spread;
+	- Outliers.
+One sentence summary should allow for any person to read it and have a general understand
+of what your data looks like.
+
+IQR = Q3 - Q1
+
+Empirical rule: 68 - 95 - 99.7 (3 STDEVS)
+
+PK - primary key. It exists in every table, and it is a column, that has unique value for each row.
+FK - foreign key. It is a column in one table that is a primary key in a different table.
+
+
+
